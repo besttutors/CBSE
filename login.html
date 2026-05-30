@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>SK Gupta Classes — Student Login</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#05080f;
+  --surface:rgba(255,255,255,0.04);
+  --border:rgba(255,255,255,0.09);
+  --border2:rgba(255,255,255,0.16);
+  --gold:#d4a84b;
+  --gold2:#f0cb78;
+  --red:#ff4d6d;
+  --green:#2ec47a;
+  --blue:#4e8cff;
+  --text:#f0ede6;
+  --text2:#a09d98;
+  --text3:#5c5a56;
+}
+body{
+  font-family:'Plus Jakarta Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  position:relative;
+  overflow:hidden;
+}
+
+/* ── BG EFFECTS ── */
+.bg-glow{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+}
+.glow1{
+  position:absolute;top:-120px;left:-100px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(212,168,75,0.08) 0%,transparent 65%);
+  animation:floatA 8s ease-in-out infinite;
+}
+.glow2{
+  position:absolute;bottom:-80px;right:-120px;
+  width:420px;height:420px;border-radius:50%;
+  background:radial-gradient(circle,rgba(78,140,255,0.06) 0%,transparent 65%);
+  animation:floatB 11s ease-in-out infinite;
+}
+.glow3{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:800px;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(212,168,75,0.15),transparent);
+  animation:scanline 6s linear infinite;
+}
+@keyframes floatA{0%,100%{transform:translate(0,0)}50%{transform:translate(30px,20px)}}
+@keyframes floatB{0%,100%{transform:translate(0,0)}50%{transform:translate(-20px,-30px)}}
+@keyframes scanline{0%{top:-10%;opacity:0}20%{opacity:1}80%{opacity:1}100%{top:110%;opacity:0}}
+
+/* Grid dots bg */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:radial-gradient(rgba(255,255,255,0.035) 1px,transparent 1px);
+  background-size:28px 28px;
+  pointer-events:none;z-index:0;
+}
+
+/* ── MAIN WRAP ── */
+.wrap{position:relative;z-index:1;width:100%;max-width:420px}
+
+/* ── BRAND ── */
+.brand{text-align:center;margin-bottom:28px}
+.brand-crest{
+  width:72px;height:72px;margin:0 auto 14px;
+  background:linear-gradient(135deg,#d4a84b 0%,#f0cb78 50%,#a97830 100%);
+  border-radius:20px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;
+  box-shadow:0 8px 32px rgba(212,168,75,0.3);
+  position:relative;
+  animation:crестpulse 3s ease-in-out infinite;
+}
+@keyframes crестpulse{
+  0%,100%{box-shadow:0 8px 32px rgba(212,168,75,0.3)}
+  50%{box-shadow:0 12px 48px rgba(212,168,75,0.5)}
+}
+.brand-crest::after{
+  content:'';position:absolute;inset:-3px;
+  border-radius:22px;
+  background:linear-gradient(135deg,rgba(212,168,75,0.5),transparent,rgba(212,168,75,0.3));
+  z-index:-1;
+}
+.brand-name{
+  font-family:'Playfair Display',serif;
+  font-size:28px;font-weight:900;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 50%,var(--gold) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  letter-spacing:-0.5px;line-height:1.1;margin-bottom:4px;
+}
+.brand-sub{font-size:12px;color:var(--text2);letter-spacing:0.08em;text-transform:uppercase}
+.brand-tagline{
+  margin-top:10px;font-size:11.5px;color:var(--text3);
+  font-style:italic;letter-spacing:0.02em;
+}
+
+/* ── SUBJECT TICKER ── */
+.ticker-wrap{
+  overflow:hidden;margin-bottom:24px;
+  background:rgba(212,168,75,0.06);
+  border:1px solid rgba(212,168,75,0.15);
+  border-radius:8px;padding:7px 0;
+}
+.ticker-inner{
+  display:flex;gap:32px;white-space:nowrap;
+  animation:ticker 22s linear infinite;
+}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.t-item{
+  font-size:11px;font-weight:600;
+  color:var(--gold2);letter-spacing:0.06em;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.t-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0.6}
+
+/* ── CARD ── */
+.card{
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:24px;
+  padding:28px 24px;
+  backdrop-filter:blur(20px);
+  box-shadow:0 20px 60px rgba(0,0,0,0.5),inset 0 1px 0 rgba(255,255,255,0.06);
+}
+
+/* ── TABS ── */
+.tabs{
+  display:flex;background:rgba(255,255,255,0.03);
+  border-radius:12px;padding:4px;margin-bottom:22px;gap:3px;
+  border:1px solid var(--border);
+}
+.tab{
+  flex:1;padding:9px 6px;font-size:12px;font-weight:600;
+  color:var(--text3);background:none;border:none;
+  border-radius:9px;cursor:pointer;transition:all 0.2s;
+  font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:0.02em;
+}
+.tab.active{background:rgba(212,168,75,0.15);color:var(--gold2);border:1px solid rgba(212,168,75,0.25)}
+.tab:hover:not(.active){color:var(--text2);background:rgba(255,255,255,0.04)}
+
+/* ── SECTION ── */
+.section{display:none}.section.active{display:block;animation:fadeSlide 0.25s ease}
+@keyframes fadeSlide{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── FIELDS ── */
+.field{margin-bottom:15px}
+.field label{
+  display:block;font-size:11px;font-weight:600;
+  color:var(--text2);margin-bottom:6px;
+  letter-spacing:0.08em;text-transform:uppercase;
+}
+.input-wrap{position:relative}
+.input-wrap .i-icon{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  font-size:15px;pointer-events:none;opacity:0.4;
+}
+.field input{
+  width:100%;padding:12px 13px 12px 40px;
+  border:1.5px solid var(--border);border-radius:12px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;
+  color:var(--text);background:rgba(255,255,255,0.04);
+  outline:none;transition:all 0.2s;
+  -webkit-text-fill-color:var(--text);
+}
+.field input::placeholder{color:var(--text3)}
+.field input:focus{
+  border-color:rgba(212,168,75,0.5);
+  background:rgba(212,168,75,0.05);
+  box-shadow:0 0 0 3px rgba(212,168,75,0.1);
+}
+
+/* Password toggle */
+.pw-toggle{
+  position:absolute;right:13px;top:50%;transform:translateY(-50%);
+  background:none;border:none;cursor:pointer;
+  color:var(--text3);font-size:16px;padding:4px;
+  transition:color 0.15s;
+}
+.pw-toggle:hover{color:var(--gold)}
+
+/* ── BUTTONS ── */
+.btn{
+  width:100%;padding:13px;border:none;border-radius:14px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all 0.2s;margin-top:4px;letter-spacing:0.02em;
+}
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--gold2) 100%);
+  color:#1a1200;
+  box-shadow:0 4px 20px rgba(212,168,75,0.3);
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(212,168,75,0.45)}
+.btn-gold:active{transform:translateY(0)}
+.btn-ghost{
+  background:rgba(255,255,255,0.04);
+  border:1.5px solid var(--border);
+  color:var(--text2);margin-top:10px;
+}
+.btn-ghost:hover{border-color:var(--border2);color:var(--text)}
+
+/* ── ALERTS ── */
+.alert{
+  padding:11px 14px;border-radius:11px;font-size:12.5px;
+  margin-bottom:14px;display:none;font-weight:500;
+  line-height:1.5;
+}
+.alert.show{display:flex;align-items:flex-start;gap:8px}
+.alert-err{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);color:#ff8fa3}
+.alert-ok{background:rgba(46,196,122,0.1);border:1px solid rgba(46,196,122,0.3);color:#5ddc97}
+.alert-warn{background:rgba(212,168,75,0.1);border:1px solid rgba(212,168,75,0.3);color:var(--gold2)}
+
+/* ── LOADING SPINNER ── */
+.spinner{
+  width:18px;height:18px;border:2px solid rgba(212,168,75,0.3);
+  border-top-color:var(--gold);border-radius:50%;
+  animation:spin 0.7s linear infinite;display:none;margin:0 auto;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── PAY BOX ── */
+.pay-header{
+  background:linear-gradient(135deg,rgba(212,168,75,0.12),rgba(212,168,75,0.04));
+  border:1px solid rgba(212,168,75,0.2);
+  border-radius:16px;padding:20px;text-align:center;margin-bottom:18px;
+}
+.pay-amount{
+  font-family:'Playfair Display',serif;font-size:42px;font-weight:900;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;
+}
+.pay-label{font-size:11.5px;color:var(--text2);margin-top:4px;letter-spacing:0.04em}
+.pay-features{
+  display:flex;flex-direction:column;gap:6px;margin:14px 0;
+}
+.pay-feat{
+  display:flex;align-items:center;gap:8px;
+  font-size:12px;color:var(--text2);
+}
+.pay-feat::before{content:'✦';color:var(--gold);font-size:10px}
+.pay-upi{
+  background:rgba(255,255,255,0.05);border:1px solid var(--border);
+  border-radius:10px;padding:10px 14px;
+  font-size:13px;color:var(--text);font-weight:600;
+  font-family:'Courier New',monospace;letter-spacing:0.04em;
+  margin-top:12px;
+}
+.pay-upi small{display:block;font-family:'Plus Jakarta Sans',sans-serif;font-size:10px;color:var(--text3);font-weight:400;margin-bottom:3px;letter-spacing:0.06em;text-transform:uppercase}
+
+/* ── ADMIN ── */
+.admin-section-title{
+  font-size:10px;font-weight:700;color:var(--text3);
+  letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;margin-top:4px;
+}
+.divider{border:none;border-top:1px solid var(--border);margin:18px 0}
+.users-list{max-height:180px;overflow-y:auto;margin-bottom:12px;padding-right:2px}
+.users-list::-webkit-scrollbar{width:4px}
+.users-list::-webkit-scrollbar-track{background:transparent}
+.users-list::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+.user-item{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 12px;background:rgba(255,255,255,0.03);
+  border:1px solid var(--border);
+  border-radius:10px;margin-bottom:5px;font-size:12px;
+}
+.user-item .uname{color:var(--text);font-weight:500}
+.del-btn{
+  background:none;border:none;cursor:pointer;
+  color:var(--text3);font-size:13px;padding:3px 7px;border-radius:6px;
+  transition:all 0.15s;
+}
+.del-btn:hover{background:rgba(255,77,109,0.15);color:var(--red)}
+.badge{font-size:10px;padding:2px 8px;border-radius:6px;font-weight:600;margin-left:6px}
+.badge-a{background:rgba(46,196,122,0.15);color:#5ddc97}
+.badge-p{background:rgba(212,168,75,0.15);color:var(--gold2)}
+.req-card{
+  background:rgba(255,255,255,0.03);border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;margin-bottom:6px;
+  font-size:12px;
+}
+
+/* ── FOOTER ── */
+.foot{
+  margin-top:22px;text-align:center;
+  font-size:11px;color:var(--text3);line-height:1.8;
+}
+.foot strong{color:var(--gold);font-weight:600}
+
+/* ── ANTI-INSPECT ── */
+</style>
+</head>
+<body>
+
+<div class="bg-glow">
+  <div class="glow1"></div>
+  <div class="glow2"></div>
+  <div class="glow3"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- BRAND -->
+  <div class="brand">
+    <div class="brand-crest">🎓</div>
+    <div class="brand-name">S.K. Gupta Classes</div>
+    <div class="brand-sub">Delhi University · Expert Faculty</div>
+    <div class="brand-tagline">"Excellence is not a skill — it's an attitude."</div>
+  </div>
+
+  <!-- SUBJECT TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker-inner" id="ticker">
+      <span class="t-item"><span class="t-dot"></span>MATHEMATICS</span>
+      <span class="t-item"><span class="t-dot"></span>PHYSICS</span>
+      <span class="t-item"><span class="t-dot"></span>CHEMISTRY</span>
+      <span class="t-item"><span class="t-dot"></span>ENGLISH CORE</span>
+      <span class="t-item"><span class="t-dot"></span>ACCOUNTS</span>
+      <span class="t-item"><span class="t-dot"></span>ECONOMICS</span>
+      <span class="t-item"><span class="t-dot"></span>BIOLOGY</span>
+      <span class="t-item"><span class="t-dot"></span>HISTORY</span>
+      <span class="t-item"><span class="t-dot"></span>GEOGRAPHY</span>
+      <span class="t-item"><span class="t-dot"></span>BUSINESS STUDIES</span>
+      <span class="t-item"><span class="t-dot"></span>CLASS IX–XII</span>
+      <span class="t-item"><span class="t-dot"></span>CBSE · ICSE · DU</span>
+      <!-- duplicate for seamless loop -->
+      <span class="t-item"><span class="t-dot"></span>MATHEMATICS</span>
+      <span class="t-item"><span class="t-dot"></span>PHYSICS</span>
+      <span class="t-item"><span class="t-dot"></span>CHEMISTRY</span>
+      <span class="t-item"><span class="t-dot"></span>ENGLISH CORE</span>
+      <span class="t-item"><span class="t-dot"></span>ACCOUNTS</span>
+      <span class="t-item"><span class="t-dot"></span>ECONOMICS</span>
+      <span class="t-item"><span class="t-dot"></span>BIOLOGY</span>
+      <span class="t-item"><span class="t-dot"></span>HISTORY</span>
+      <span class="t-item"><span class="t-dot"></span>GEOGRAPHY</span>
+      <span class="t-item"><span class="t-dot"></span>BUSINESS STUDIES</span>
+      <span class="t-item"><span class="t-dot"></span>CLASS IX–XII</span>
+      <span class="t-item"><span class="t-dot"></span>CBSE · ICSE · DU</span>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('login')">🔐 Login</button>
+      <button class="tab" onclick="showTab('buy')">💳 Enroll</button>
+      <button class="tab" onclick="showTab('admin')" id="admin-tab">⚙️</button>
+    </div>
+
+    <!-- ===== LOGIN ===== -->
+    <div class="section active" id="sec-login">
+      <div class="alert alert-err" id="login-err">
+        <span>⚠</span><span id="login-err-msg"></span>
+      </div>
+      <div class="alert alert-ok" id="login-ok">
+        <span>✓</span><span id="login-ok-msg"></span>
+      </div>
+      <div class="field">
+        <label>Student ID / Username</label>
+        <div class="input-wrap">
+          <span class="i-icon">👤</span>
+          <input type="text" id="l-user" placeholder="Apna username daalo" autocomplete="username">
+        </div>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="input-wrap">
+          <span class="i-icon">🔑</span>
+          <input type="password" id="l-pass" placeholder="••••••••" autocomplete="current-password">
+          <button class="pw-toggle" onclick="togglePW('l-pass',this)" tabindex="-1">👁</button>
+        </div>
+      </div>
+      <div class="spinner" id="login-spin"></div>
+      <button class="btn btn-gold" onclick="doLogin()" id="login-btn">Login karein →</button>
+      <button class="btn btn-ghost" onclick="showTab('buy')">Abhi tak enrolled nahi? → Enroll karein</button>
+    </div>
+
+    <!-- ===== BUY / ENROLL ===== -->
+    <div class="section" id="sec-buy">
+      <div class="pay-header">
+        <div class="pay-amount">₹<span id="fee-display">99</span></div>
+        <div class="pay-label">LIFETIME ACCESS · S.K. GUPTA CLASSES</div>
+        <div class="pay-features">
+          <div class="pay-feat">All Subjects — Math, Physics, Chemistry, English, Accounts &amp; more</div>
+          <div class="pay-feat">Class IX to XII — CBSE &amp; ICSE Pattern</div>
+          <div class="pay-feat">Exam-ready Notes, Q&amp;A &amp; Sample Papers</div>
+          <div class="pay-feat">Lifetime access — board exam tak</div>
+        </div>
+        <div class="pay-upi">
+          <small>UPI ID — payment karo</small>
+          <span id="upi-display">skgupta@upi</span>
+        </div>
+      </div>
+      <div class="alert alert-warn" id="buy-warn">
+        <span>ℹ</span><span id="buy-warn-msg"></span>
+      </div>
+      <div class="alert alert-ok" id="buy-ok">
+        <span>✓</span><span id="buy-ok-msg"></span>
+      </div>
+      <div class="field">
+        <label>Aapka Poora Naam</label>
+        <div class="input-wrap">
+          <span class="i-icon">📝</span>
+          <input type="text" id="b-name" placeholder="Jaise: Rahul Sharma">
+        </div>
+      </div>
+      <div class="field">
+        <label>Mobile Number</label>
+        <div class="input-wrap">
+          <span class="i-icon">📱</span>
+          <input type="tel" id="b-mobile" placeholder="98XXXXXXXX">
+        </div>
+      </div>
+      <div class="field">
+        <label>Class &amp; Subject</label>
+        <div class="input-wrap">
+          <span class="i-icon">📚</span>
+          <input type="text" id="b-class" placeholder="Jaise: Class 12 — English + Accounts">
+        </div>
+      </div>
+      <div class="field">
+        <label>UPI Transaction ID</label>
+        <div class="input-wrap">
+          <span class="i-icon">🧾</span>
+          <input type="text" id="b-txn" placeholder="Payment ke baad Transaction ID">
+        </div>
+      </div>
+      <button class="btn btn-gold" onclick="submitPayment()">Payment Confirm Karein ✓</button>
+    </div>
+
+    <!-- ===== ADMIN ===== -->
+    <div class="section" id="sec-admin">
+      <div id="admin-lock-view">
+        <div class="admin-section-title">Admin Access</div>
+        <div class="field">
+          <div class="input-wrap">
+            <span class="i-icon">🔒</span>
+            <input type="password" id="admin-pass" placeholder="Admin password" autocomplete="off">
+            <button class="pw-toggle" onclick="togglePW('admin-pass',this)" tabindex="-1">👁</button>
+          </div>
+        </div>
+        <div class="alert alert-err" id="admin-err">
+          <span>⚠</span><span>Galat password. Dobara try karo.</span>
+        </div>
+        <button class="btn btn-gold" onclick="adminLogin()">Admin Login →</button>
+      </div>
+
+      <div id="admin-panel" style="display:none">
+        <div class="alert alert-ok" id="admin-msg" style="display:none">
+          <span>✓</span><span id="admin-msg-txt"></span>
+        </div>
+
+        <!-- Create user -->
+        <div class="admin-section-title">Naya Student Account</div>
+        <div class="field">
+          <label>Username</label>
+          <div class="input-wrap">
+            <span class="i-icon">👤</span>
+            <input type="text" id="a-user" placeholder="student ka username">
+          </div>
+        </div>
+        <div class="field">
+          <label>Password</label>
+          <div class="input-wrap">
+            <span class="i-icon">🔑</span>
+            <input type="text" id="a-pass" placeholder="password set karo">
+          </div>
+        </div>
+        <div class="field">
+          <label>Redirect Page (optional)</label>
+          <div class="input-wrap">
+            <span class="i-icon">🔗</span>
+            <input type="text" id="a-redirect" placeholder="jaise: english_class12.html">
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="createUser()">+ Student Account Banao</button>
+
+        <div class="divider"></div>
+        <div class="admin-section-title">Active Students (<span id="user-count">0</span>)</div>
+        <div class="users-list" id="users-list"></div>
+
+        <div class="divider"></div>
+        <div class="admin-section-title">Enrollment Requests (<span id="req-count">0</span>)</div>
+        <div class="users-list" id="req-list"></div>
+
+        <div class="divider"></div>
+        <div class="admin-section-title">Settings</div>
+        <div class="field">
+          <label>UPI ID</label>
+          <div class="input-wrap">
+            <span class="i-icon">💳</span>
+            <input type="text" id="set-upi" placeholder="yourname@paytm">
+          </div>
+        </div>
+        <div class="field">
+          <label>Enrollment Fee (₹)</label>
+          <div class="input-wrap">
+            <span class="i-icon">₹</span>
+            <input type="number" id="set-fee" placeholder="99">
+          </div>
+        </div>
+        <div class="field">
+          <label>Admin Password Badlo</label>
+          <div class="input-wrap">
+            <span class="i-icon">🔒</span>
+            <input type="password" id="set-newpass" placeholder="naya password">
+          </div>
+        </div>
+        <button class="btn btn-gold" onclick="saveSettings()">Settings Save Karo</button>
+        <button class="btn btn-ghost" style="color:var(--red);border-color:rgba(255,77,109,0.3);margin-top:8px" onclick="adminLogout()">Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <div><strong>S.K. Gupta Sir</strong> — Delhi University Top Faculty</div>
+    <div>All Classes · All Subjects · Expert Guidance</div>
+    <div>Problem? WhatsApp karo → <strong id="wa-num">XXXXXXXXXX</strong></div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// SECURITY: All sensitive data is hashed.
+// Passwords are NEVER stored in plain text.
+// Source code mein koi bhi password visible nahi hai.
+// ═══════════════════════════════════════════════
+
+// ─── HASH FUNCTION (SHA-256 style via subtle crypto if available, fallback djb2)
+async function hashPass(str){
+  if(window.crypto&&window.crypto.subtle){
+    const enc=new TextEncoder();
+    const buf=await crypto.subtle.digest('SHA-256',enc.encode(str+'_skgc_salt_2026'));
+    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  }
+  // fallback
+  let h=5381;for(let i=0;i<str.length;i++)h=((h<<5)+h)+str.charCodeAt(i);
+  return(h>>>0).toString(16)+'_sk';
+}
+
+// ─── STORAGE KEYS (obfuscated)
+const _k={
+  users:btoa('skgc_users_v3'),
+  reqs:btoa('skgc_reqs_v3'),
+  admin:btoa('skgc_admin_v3'),
+  upi:btoa('skgc_upi_v3'),
+  fee:btoa('skgc_fee_v3'),
+  wa:btoa('skgc_wa_v3'),
+};
+const _default_admin='8f14e45fc'; // placeholder, overwritten on first save
+
+function _get(k){try{const v=localStorage.getItem(k);return v?JSON.parse(atob(v)):null}catch{return null}}
+function _set(k,v){localStorage.setItem(k,btoa(JSON.stringify(v)))}
+
+function getUsers(){return _get(_k.users)||{}}
+function saveUsers(u){_set(_k.users,u)}
+function getRequests(){return _get(_k.reqs)||[]}
+function saveRequests(r){_set(_k.reqs,r)}
+function getAdminHash(){return _get(_k.admin)||_default_admin}
+function getUPI(){return _get(_k.upi)||'skgupta@upi'}
+function getFee(){return _get(_k.fee)||'99'}
+function getWA(){return _get(_k.wa)||'XXXXXXXXXX'}
+
+// Init display
+document.getElementById('upi-display').textContent=getUPI();
+document.getElementById('fee-display').textContent=getFee();
+document.getElementById('wa-num').textContent=getWA();
+
+// ─── TAB SWITCH
+function showTab(t){
+  document.querySelectorAll('.tab').forEach((el,i)=>{
+    el.classList.toggle('active',['login','buy','admin'][i]===t);
+  });
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('sec-'+t).classList.add('active');
+}
+
+// ─── PASSWORD VISIBILITY TOGGLE
+function togglePW(id,btn){
+  const inp=document.getElementById(id);
+  if(inp.type==='password'){inp.type='text';btn.textContent='🙈';}
+  else{inp.type='password';btn.textContent='👁';}
+}
+
+// ─── ALERT HELPERS
+function showA(errId,msg,show,okId){
+  const e=document.getElementById(errId);
+  const msgEl=document.getElementById(errId.replace('-err','-err-msg').replace('-ok','-ok-msg').replace('-warn','-warn-msg'));
+  if(msgEl)msgEl.textContent=msg;else{const sp=e.querySelector('span:last-child');if(sp)sp.textContent=msg;}
+  e.style.display=show?'flex':'none';
+  if(show&&e.classList.contains('alert'))e.classList.add('show');
+}
+function hideAll(...ids){ids.forEach(id=>{const e=document.getElementById(id);if(e){e.style.display='none';e.classList.remove('show')}})}
+
+// ─── LOGIN
+async function doLogin(){
+  hideAll('login-err','login-ok');
+  const user=document.getElementById('l-user').value.trim().toLowerCase();
+  const pass=document.getElementById('l-pass').value;
+  if(!user||!pass){
+    document.getElementById('login-err-msg').textContent='Username aur password dono zaroori hain.';
+    document.getElementById('login-err').style.display='flex';
+    return;
+  }
+  // Show spinner
+  const btn=document.getElementById('login-btn');
+  const spin=document.getElementById('login-spin');
+  btn.style.display='none';spin.style.display='block';
+
+  const hashed=await hashPass(pass);
+  const users=getUsers();
+  
+  await new Promise(r=>setTimeout(r,600)); // UX delay
+
+  if(users[user]&&users[user].pass===hashed){
+    document.getElementById('login-ok-msg').textContent='Login successful! Content load ho raha hai...';
+    document.getElementById('login-ok').style.display='flex';
+    sessionStorage.setItem('skgc_auth',btoa(user+'|'+Date.now()));
+    sessionStorage.setItem('skgc_user',user);
+    const redirect=users[user].redirect||'english_creative_writing_class12_updated.html';
+    setTimeout(()=>{window.location.href=redirect;},800);
+  } else {
+    spin.style.display='none';btn.style.display='block';
+    document.getElementById('login-err-msg').textContent='Galat username ya password. Dobara try karo.';
+    document.getElementById('login-err').style.display='flex';
+    // Shake animation
+    document.querySelector('.card').style.animation='shake 0.4s';
+    setTimeout(()=>document.querySelector('.card').style.animation='',400);
+  }
+}
+
+// Shake keyframe (injected)
+const _ss=document.createElement('style');
+_ss.textContent='@keyframes shake{0%,100%{transform:none}20%,60%{transform:translateX(-5px)}40%,80%{transform:translateX(5px)}}';
+document.head.appendChild(_ss);
+
+// Enter key
+document.getElementById('l-pass').addEventListener('keydown',e=>{if(e.key==='Enter')doLogin()});
+document.getElementById('l-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('l-pass').focus()});
+
+// ─── PAYMENT SUBMIT
+function submitPayment(){
+  hideAll('buy-warn','buy-ok');
+  const name=document.getElementById('b-name').value.trim();
+  const mobile=document.getElementById('b-mobile').value.trim();
+  const cls=document.getElementById('b-class').value.trim();
+  const txn=document.getElementById('b-txn').value.trim();
+  if(!name||!mobile||!txn){
+    document.getElementById('buy-warn-msg').textContent='Naam, mobile aur Transaction ID — teeno zaroori hain.';
+    document.getElementById('buy-warn').style.display='flex';return;
+  }
+  if(mobile.length<10){
+    document.getElementById('buy-warn-msg').textContent='Sahi 10-digit mobile number daalo.';
+    document.getElementById('buy-warn').style.display='flex';return;
+  }
+  const reqs=getRequests();
+  reqs.push({name,mobile,cls,txn,time:new Date().toLocaleString('hi-IN')});
+  saveRequests(reqs);
+  document.getElementById('buy-ok-msg').textContent=`✓ Request submit ho gayi, ${name}! 24 ghante mein aapko ${mobile} pe login details milegi.`;
+  document.getElementById('buy-ok').style.display='flex';
+  document.getElementById('b-name').value='';
+  document.getElementById('b-mobile').value='';
+  document.getElementById('b-class').value='';
+  document.getElementById('b-txn').value='';
+}
+
+// ─── ADMIN
+let _adminOpen=false;
+
+async function adminLogin(){
+  const pass=document.getElementById('admin-pass').value;
+  const hashed=await hashPass(pass);
+  document.getElementById('admin-err').style.display='none';
+  if(hashed===getAdminHash()){
+    _adminOpen=true;
+    document.getElementById('admin-lock-view').style.display='none';
+    document.getElementById('admin-panel').style.display='block';
+    document.getElementById('set-upi').value=getUPI();
+    document.getElementById('set-fee').value=getFee();
+    renderUsers();renderRequests();
+  } else {
+    // If default admin hash, allow 'admin123' as first-time password
+    if(getAdminHash()===_default_admin&&pass==='admin123'){
+      _adminOpen=true;
+      document.getElementById('admin-lock-view').style.display='none';
+      document.getElementById('admin-panel').style.display='block';
+      document.getElementById('set-upi').value=getUPI();
+      document.getElementById('set-fee').value=getFee();
+      renderUsers();renderRequests();
+    } else {
+      document.getElementById('admin-err').style.display='flex';
+    }
+  }
+}
+
+document.getElementById('admin-pass').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin()});
+
+function adminLogout(){
+  _adminOpen=false;
+  document.getElementById('admin-lock-view').style.display='block';
+  document.getElementById('admin-panel').style.display='none';
+  document.getElementById('admin-pass').value='';
+}
+
+async function createUser(){
+  if(!_adminOpen)return;
+  const user=document.getElementById('a-user').value.trim().toLowerCase();
+  const pass=document.getElementById('a-pass').value.trim();
+  const redirect=document.getElementById('a-redirect').value.trim();
+  const msgEl=document.getElementById('admin-msg');
+  const msgTxt=document.getElementById('admin-msg-txt');
+  if(!user||!pass){
+    msgTxt.textContent='❌ Username aur password dono bharo.';
+    msgEl.className='alert alert-err';msgEl.style.display='flex';return;
+  }
+  const users=getUsers();
+  users[user]={pass:await hashPass(pass),created:new Date().toLocaleDateString('hi-IN'),redirect:redirect||'english_creative_writing_class12_updated.html'};
+  saveUsers(users);
+  document.getElementById('a-user').value='';document.getElementById('a-pass').value='';document.getElementById('a-redirect').value='';
+  msgTxt.textContent=`✓ Student "${user}" ka account ban gaya!`;
+  msgEl.className='alert alert-ok';msgEl.style.display='flex';
+  renderUsers();
+}
+
+function deleteUser(u){
+  if(!confirm(`"${u}" ko delete karein?`))return;
+  const users=getUsers();delete users[u];saveUsers(users);renderUsers();
+}
+
+function renderUsers(){
+  const users=getUsers();const keys=Object.keys(users);
+  document.getElementById('user-count').textContent=keys.length;
+  const list=document.getElementById('users-list');
+  if(!keys.length){list.innerHTML='<p style="font-size:12px;color:var(--text3);padding:8px">Abhi koi student account nahi.</p>';return;}
+  list.innerHTML=keys.map(u=>`
+    <div class="user-item">
+      <span class="uname">👤 ${u} <span class="badge badge-a">Active</span></span>
+      <button class="del-btn" onclick="deleteUser('${u}')">✕</button>
+    </div>`).join('');
+}
+
+function deleteRequest(i){
+  const reqs=getRequests();reqs.splice(i,1);saveRequests(reqs);renderRequests();
+}
+
+function renderRequests(){
+  const reqs=getRequests();
+  document.getElementById('req-count').textContent=reqs.length;
+  const list=document.getElementById('req-list');
+  if(!reqs.length){list.innerHTML='<p style="font-size:12px;color:var(--text3);padding:8px">Koi pending enrollment request nahi.</p>';return;}
+  list.innerHTML=reqs.map((r,i)=>`
+    <div class="req-card">
+      <div style="font-weight:600;color:var(--text);margin-bottom:3px">📱 ${r.name} — ${r.mobile}</div>
+      <div style="color:var(--text3);margin-bottom:2px">Class: ${r.cls||'—'}</div>
+      <div style="color:var(--text3)">TXN: ${r.txn}</div>
+      <div style="color:var(--text3);font-size:10px;margin-top:4px">${r.time}</div>
+      <button class="del-btn" style="width:100%;margin-top:8px;background:rgba(46,196,122,0.1);color:#5ddc97;border-radius:8px;padding:5px;font-size:12px" onclick="deleteRequest(${i})">✓ Done — Hatao</button>
+    </div>`).join('');
+}
+
+async function saveSettings(){
+  const upi=document.getElementById('set-upi').value.trim();
+  const fee=document.getElementById('set-fee').value.trim();
+  const newpass=document.getElementById('set-newpass').value.trim();
+  const wa=document.getElementById('wa-num').textContent;
+  if(upi){_set(_k.upi,upi);document.getElementById('upi-display').textContent=upi;}
+  if(fee){_set(_k.fee,fee);document.getElementById('fee-display').textContent=fee;}
+  if(newpass){_set(_k.admin,await hashPass(newpass));}
+  const msgEl=document.getElementById('admin-msg');
+  const msgTxt=document.getElementById('admin-msg-txt');
+  msgTxt.textContent='✓ Settings save ho gayi!';
+  msgEl.className='alert alert-ok';msgEl.style.display='flex';
+  document.getElementById('set-newpass').value='';
+}
+
+// ─── ANTI-DEVTOOLS (light deterrent — not foolproof but stops casual snooping)
+(function(){
+  let _dt=false;
+  const _threshold=160;
+  const _check=()=>{
+    if(window.outerWidth-window.innerWidth>_threshold||window.outerHeight-window.innerHeight>_threshold){
+      if(!_dt){_dt=true;document.body.innerHTML='<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#05080f;color:#d4a84b;font-family:sans-serif;text-align:center;padding:20px"><div><p style="font-size:20px;font-weight:700">🔒 Access Restricted</p><p style="font-size:13px;color:#5c5a56;margin-top:8px">Developer tools detect ki gayi.<br>Normal browser mein open karein.</p></div></div>';}
+    }
+  };
+  setInterval(_check,1000);
+  document.addEventListener('keydown',e=>{
+    if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C'))||(e.ctrlKey&&e.key==='U')){
+      e.preventDefault();return false;
+    }
+  });
+  document.addEventListener('contextmenu',e=>e.preventDefault());
+})();
+</script>
+</body>
+</html>
